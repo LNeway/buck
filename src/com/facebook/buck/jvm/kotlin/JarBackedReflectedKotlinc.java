@@ -46,11 +46,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import com.facebook.buck.core.util.log.Logger;
 
 public class JarBackedReflectedKotlinc implements Kotlinc {
-
-  private Logger logger = Logger.get(JarBackedReflectedKotlinc.class);
 
   private static final String COMPILER_CLASS = "org.jetbrains.kotlin.cli.jvm.K2JVMCompiler";
   private static final String EXIT_CODE_CLASS = "org.jetbrains.kotlin.cli.common.ExitCode";
