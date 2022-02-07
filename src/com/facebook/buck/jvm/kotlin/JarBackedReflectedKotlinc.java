@@ -40,6 +40,8 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -180,12 +182,19 @@ public class JarBackedReflectedKotlinc implements Kotlinc {
 
       Method getCode = exitCodeClass.getMethod("getCode");
 
+      List<String> newArgs = new ArrayList<>(args);
+
       try (UncloseablePrintStream stdErr = new UncloseablePrintStream(context.getStdErr())) {
         logger.error("class name is " + compilerShim.getClass().getName());
-        for (int i = 0; i < args.size(); i++) {
-          logger.error("args is " + args.get(i));
+        for (int i = 0; i < newArgs.size(); i++) {
+          String arg = newArgs.get(i);
+          if (arg.equals("-classpath")) {
+            String targetArg = newArgs.get(i + 1) + ":/root/kotlin-native-linux-1.3.71/lib/kotlin-compiler-embeddable-1.3.71.jar:/root/kotlin-native-linux-1.3.71/lib/trove4j-1.0.20181211.jar";
+            newArgs.set(i + 1, targetArg);
+            break;
+          }
         }
-        Object exitCode = compile.invoke(compilerShim, stdErr, args.toArray(new String[0]));
+        Object exitCode = compile.invoke(compilerShim, stdErr, newArgs.toArray(new String[0]));
 
         return (Integer) getCode.invoke(exitCode);
       }
