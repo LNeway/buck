@@ -130,7 +130,6 @@ public class Aapt2Compile extends AbstractBuildRule {
           androidPlatformTarget.getAapt2Executable().get().getCommandPrefix(pathResolver));
 
       builder.add("compile");
-      builder.add("--legacy"); // TODO(dreiss): Maybe make this an option?
       builder.add("-o");
       builder.add(outputPath.toString());
       builder.add("--dir");
