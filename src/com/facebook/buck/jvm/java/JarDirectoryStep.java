@@ -17,7 +17,6 @@
 package com.facebook.buck.jvm.java;
 
 import com.facebook.buck.core.build.execution.context.ExecutionContext;
-import com.facebook.buck.core.util.log.Logger;
 import com.facebook.buck.io.filesystem.ProjectFilesystem;
 import com.facebook.buck.step.Step;
 import com.facebook.buck.step.StepExecutionResult;
@@ -28,8 +27,6 @@ import java.nio.file.Path;
 
 /** Creates a JAR file from a collection of directories/ZIP/JAR files. */
 public class JarDirectoryStep implements Step {
-
-  private static final Logger LOG = Logger.get(JarDirectoryStep.class);
 
   private final ProjectFilesystem filesystem;
 
@@ -74,7 +71,6 @@ public class JarDirectoryStep implements Step {
 
   @Override
   public StepExecutionResult execute(ExecutionContext context) throws IOException {
-    LOG.error("the jar parameters is " + parameters.toString());
     JavacEventSinkToBuckEventBusBridge eventSink =
         new JavacEventSinkToBuckEventBusBridge(context.getBuckEventBus());
     LoggingJarBuilderObserver loggingObserver =
