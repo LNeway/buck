@@ -134,6 +134,10 @@ public class JarBackedReflectedKotlinc implements Kotlinc {
       Optional<Path> workingDirectory,
       ProjectFilesystem projectFilesystem) {
 
+    for (int i = options.size() - 1; i >= 0; i--) {
+      logger.error("option is " + options.get(i));
+    }
+
     ImmutableList<Path> expandedSources;
     try {
       expandedSources =
