@@ -194,6 +194,12 @@ public class JarBackedReflectedKotlinc implements Kotlinc {
             break;
           }
         }
+
+        for (int i = 0; i < newArgs.size(); i++) {
+          String arg = newArgs.get(i);
+          logger.error("the arg is " + arg);
+        }
+
         Object exitCode = compile.invoke(compilerShim, stdErr, newArgs.toArray(new String[0]));
 
         return (Integer) getCode.invoke(exitCode);
