@@ -22,6 +22,7 @@ import com.android.manifmerger.MergingReport;
 import com.facebook.buck.android.apkmodule.APKModule;
 import com.facebook.buck.core.build.execution.context.ExecutionContext;
 import com.facebook.buck.core.exceptions.HumanReadableException;
+import com.facebook.buck.core.util.log.Logger;
 import com.facebook.buck.event.BuckEventBus;
 import com.facebook.buck.io.filesystem.ProjectFilesystem;
 import com.facebook.buck.step.Step;
@@ -36,8 +37,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import sun.rmi.runtime.Log;
 
 public class GenerateManifestStep implements Step {
+
+  private final Logger logger = Logger.get(GenerateManifestStep.class);
 
   private final ProjectFilesystem filesystem;
   private final Path skeletonManifestPath;
@@ -110,6 +114,16 @@ public class GenerateManifestStep implements Step {
       } else {
         manifestInvoker.withFeatures(ManifestMerger2.Invoker.Feature.NO_PLACEHOLDER_REPLACEMENT);
       }
+
+      final StringBuilder stringBuilder = new StringBuilder();
+      stringBuilder.append("the skeletonManifestPath is : " );
+      stringBuilder.append(mainManifestFile.getAbsolutePath());
+      stringBuilder.append(", the lib manifest path is : ");
+      for (File libraryManifestFile : libraryManifestFiles) {
+        stringBuilder.append(libraryManifestFile.getAbsolutePath());
+        stringBuilder.append(", ");
+      }
+      this.logger.error(stringBuilder.toString());
 
       MergingReport mergingReport =
           manifestInvoker
