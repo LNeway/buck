@@ -37,7 +37,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import sun.rmi.runtime.Log;
 
 public class GenerateManifestStep implements Step {
 
