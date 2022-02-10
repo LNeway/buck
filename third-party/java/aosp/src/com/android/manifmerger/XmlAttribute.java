@@ -39,7 +39,6 @@ import org.w3c.dom.Attr;
  * document.
  */
 public class XmlAttribute extends XmlNode {
-
     @NonNull
     private final XmlElement mOwnerElement;
     @NonNull
@@ -359,6 +358,8 @@ public class XmlAttribute extends XmlNode {
                     getValue(),
                     getOwnerElement().getType().toXmlName());
         } else {
+            String high = higherPriority.getSourceFile().toString();
+            String low = this.getSourceFile().toString();
             error = String.format(
                     "Attribute %1$s value=(%2$s) from %3$s\n"
                             + "\tis also present at %4$s value=(%5$s).\n"
@@ -374,6 +375,7 @@ public class XmlAttribute extends XmlNode {
                     mXml.getName(),
                     getOwnerElement().getType().toXmlName(),
                     higherPriority.getOwnerElement().printPosition());
+            error = error + "\r\n the high source file is " + high + " \r\n and the low is " + low;
         }
         higherPriority.addMessage(report,
                 attributeRecord != null
