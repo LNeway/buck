@@ -24,6 +24,7 @@ import com.facebook.buck.core.model.targetgraph.DescriptionWithTargetGraph;
 import com.facebook.buck.core.model.targetgraph.TargetNode;
 import com.facebook.buck.core.sourcepath.DefaultBuildTargetSourcePath;
 import com.facebook.buck.core.sourcepath.PathSourcePath;
+import com.facebook.buck.core.util.log.Logger;
 import com.facebook.buck.features.project.intellij.model.IjLibrary;
 import com.facebook.buck.features.project.intellij.model.IjLibraryFactory;
 import com.facebook.buck.features.project.intellij.model.IjLibraryFactoryResolver;
@@ -44,6 +45,8 @@ import java.util.Set;
  * TargetNodes and allows resolving those as dependencies of modules.
  */
 class DefaultIjLibraryFactory extends IjLibraryFactory {
+
+  private Logger logger = Logger.get("AndroidDeps");
 
   /** Rule describing how to create a {@link IjLibrary} from a {@link TargetNode}. */
   private interface IjLibraryRule {
@@ -167,6 +170,7 @@ class DefaultIjLibraryFactory extends IjLibraryFactory {
 
       // Based on https://developer.android.com/studio/projects/android-library.html#aar-contents,
       // the AAR library is required to have a resources folder.
+      logger.error(aarUnpackPath.toString());
       library.addClassPaths(Paths.get(aarUnpackPath.toString(), "res"));
       library.addBinaryJars(Paths.get(aarUnpackPath.toString(), "classes.jar"));
     }
