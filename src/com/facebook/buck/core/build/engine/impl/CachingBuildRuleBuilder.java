@@ -410,7 +410,7 @@ class CachingBuildRuleBuilder {
             buildResult,
             Throwable.class,
             thrown -> {
-              String message = String.format("Building rule [%s] failed.", rule.getBuildTarget());
+              String message = String.format("Building rule [%s] failed. [%s]", rule.getBuildTarget(), rule.toString());
               BuildRuleFailedException failedException = getFailedException(thrown);
               LOG.debug(failedException, message);
               if (consoleLogBuildFailuresInline) {
