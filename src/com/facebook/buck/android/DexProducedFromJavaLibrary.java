@@ -35,6 +35,7 @@ import com.facebook.buck.core.rules.impl.AbstractBuildRuleWithDeclaredAndExtraDe
 import com.facebook.buck.core.sourcepath.ExplicitBuildTargetSourcePath;
 import com.facebook.buck.core.sourcepath.SourcePath;
 import com.facebook.buck.core.sourcepath.resolver.SourcePathResolver;
+import com.facebook.buck.core.util.log.Logger;
 import com.facebook.buck.io.BuildCellRelativePath;
 import com.facebook.buck.io.filesystem.ProjectFilesystem;
 import com.facebook.buck.jvm.core.JavaLibrary;
@@ -65,6 +66,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
@@ -81,6 +83,8 @@ import javax.annotation.Nullable;
  */
 public class DexProducedFromJavaLibrary extends AbstractBuildRuleWithDeclaredAndExtraDeps
     implements SupportsInputBasedRuleKey, InitializableFromDisk<BuildOutput> {
+
+  private static Logger logger = Logger.get(DexProducedFromJavaLibrary.class);
 
   @VisibleForTesting static final String WEIGHT_ESTIMATE = "weight_estimate";
   @VisibleForTesting static final String CLASSNAMES_TO_HASHES = "classnames_to_hashes";
@@ -155,6 +159,14 @@ public class DexProducedFromJavaLibrary extends AbstractBuildRuleWithDeclaredAnd
     this.buildOutputInitializer = new BuildOutputInitializer<>(buildTarget, this);
     this.weightFactor = weightFactor;
     this.desugarDeps = desugarDeps != null ? getDesugarClassPaths(desugarDeps) : null;
+
+    logger.error(String.format("javaLibrary is %s, src path is %s",  javaLibrary.getJavaSrcs()), javaLibrarySourcePath);
+    this.desugarDeps.forEach(new Consumer<SourcePath>() {
+      @Override
+      public void accept(SourcePath sourcePath) {
+        logger.error(String.format("te desugar src %s",  sourcePath.toString()));
+      }
+    });
   }
 
   @Override
@@ -179,6 +191,7 @@ public class DexProducedFromJavaLibrary extends AbstractBuildRuleWithDeclaredAnd
     ImmutableSortedMap<String, HashCode> classNamesToHashes = javaLibrary.getClassNamesToHashes();
     boolean hasClassesToDx = !classNamesToHashes.isEmpty();
     Supplier<Integer> weightEstimate;
+    logger.error("hasClassesToDx is " + hasClassesToDx);
 
     @Nullable DxStep dx;
 
@@ -201,19 +214,26 @@ public class DexProducedFromJavaLibrary extends AbstractBuildRuleWithDeclaredAnd
       if (!javaLibrary.isDesugarEnabled()) {
         options.add(Option.NO_DESUGAR);
       }
-      dx =
-          new DxStep(
-              getProjectFilesystem(),
-              androidPlatformTarget,
-              getPathToDex(),
-              Collections.singleton(pathToOutputFile),
-              options,
-              Optional.empty(),
-              dexTool,
-              dexTool.equals(DxStep.D8),
-              desugarDeps != null
-                  ? getAbsolutePaths(desugarDeps, context.getSourcePathResolver())
-                  : null);
+
+      try {
+        dx =
+            new DxStep(
+                getProjectFilesystem(),
+                androidPlatformTarget,
+                getPathToDex(),
+                Collections.singleton(pathToOutputFile),
+                options,
+                Optional.empty(),
+                dexTool,
+                dexTool.equals(DxStep.D8),
+                desugarDeps != null
+                    ? getAbsolutePaths(desugarDeps, context.getSourcePathResolver())
+                    : null);
+      } catch (Exception exception) {
+        logger.error(exception.getMessage());
+        throw exception;
+      }
+
       steps.add(dx);
 
       // The `DxStep` delegates to android tools to build a ZIP with timestamps in it, making
