@@ -160,7 +160,7 @@ public class DexProducedFromJavaLibrary extends AbstractBuildRuleWithDeclaredAnd
     this.weightFactor = weightFactor;
     this.desugarDeps = desugarDeps != null ? getDesugarClassPaths(desugarDeps) : null;
 
-    logger.error(String.format("javaLibrary is %s, src path is %s",  javaLibrary.getJavaSrcs()), javaLibrarySourcePath);
+    logger.error(String.format("javaLibrary is %s, src path is %s",  javaLibrary.getJavaSrcs(),  javaLibrarySourcePath));
     this.desugarDeps.forEach(new Consumer<SourcePath>() {
       @Override
       public void accept(SourcePath sourcePath) {
