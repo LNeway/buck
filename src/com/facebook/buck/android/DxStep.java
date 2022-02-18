@@ -401,8 +401,10 @@ public class DxStep extends ShellStep {
         com.android.dx.command.dexer.Main dexer = new com.android.dx.command.dexer.Main(dxContext);
         arguments.parseCommandLine(args.toArray(new String[0]), dxContext);
         int returncode = dexer.run(arguments);
+        logger.error("returncode is " + returncode);
         String stdErrOutput = stderr.toString();
         if (!stdErrOutput.isEmpty()) {
+          logger.error("stdErrOutput is " + stdErrOutput);
           context.postEvent(ConsoleEvent.warning("%s", stdErrOutput));
         }
         if (returncode == 0) {
@@ -411,6 +413,7 @@ public class DxStep extends ShellStep {
         return returncode;
       } catch (IOException e) {
         e.printStackTrace(context.getStdErr());
+        logger.error("dex exception : " + e.getMessage());
         return 1;
       }
     } else {
