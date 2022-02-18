@@ -1427,6 +1427,7 @@ class CachingBuildRuleBuilder {
         // futures provided by the ExecutorService.
         future.set(Optional.of(success(BuildRuleSuccessType.BUILT_LOCALLY, cacheResult)));
       } catch (Throwable t) {
+        LOG.error(t.getMessage());
         future.setException(t);
       }
     }
