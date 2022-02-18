@@ -235,7 +235,7 @@ public class DexProducedFromJavaLibrary extends AbstractBuildRuleWithDeclaredAnd
         logger.error(exception.getMessage());
         throw exception;
       }
-
+      logger.error("dx step done");
       steps.add(dx);
 
       // The `DxStep` delegates to android tools to build a ZIP with timestamps in it, making
@@ -283,7 +283,9 @@ public class DexProducedFromJavaLibrary extends AbstractBuildRuleWithDeclaredAnd
         };
     steps.add(recordArtifactAndMetadataStep);
 
-    return steps.build();
+    ImmutableList<Step> result = steps.build();
+    logger.error("build from DexProducedFromJavaLibrary done, the " + result.size());
+    return result;
   }
 
   private static ImmutableSortedSet<SourcePath> getDesugarClassPaths(

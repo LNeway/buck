@@ -1442,6 +1442,7 @@ class CachingBuildRuleBuilder {
       List<? extends Step> steps;
       try (Scope ignored = LeafEvents.scope(eventBus, "get_build_steps")) {
         if (pipelineState == null) {
+          LOG.error("try to getBuildSteps");
           steps = rule.getBuildSteps(buildRuleBuildContext, buildableContext);
         } else {
           @SuppressWarnings("unchecked")
@@ -1453,7 +1454,9 @@ class CachingBuildRuleBuilder {
       }
 
       Optional<BuildTarget> optionalTarget = Optional.of(rule.getBuildTarget());
+      LOG.error("try to do steps");
       for (Step step : steps) {
+        LOG.error("try to do step: " + step.getShortName());
         stepRunner.runStepForBuildTarget(executionContext, step, optionalTarget);
         // Check for interruptions that may have been ignored by step.
         if (Thread.interrupted()) {
