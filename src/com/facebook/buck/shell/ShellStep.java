@@ -113,21 +113,19 @@ public abstract class ShellStep implements Step {
     endTime = System.currentTimeMillis();
     double endLoad = OS_JMX.getSystemLoadAverage();
 
-    if (LOG.isDebugEnabled()) {
-      boolean hasOutput =
-          (stdout.isPresent() && !stdout.get().isEmpty())
-              || (stderr.isPresent() && !stderr.get().isEmpty());
-      String outputFormat = hasOutput ? "\nstdout:\n%s\nstderr:\n%s\n" : " (no output)%s%s";
-      LOG.debug(
-          "%s: exit code: %d. os load (before, after): (%f, %f). CPU count: %d." + outputFormat,
-          shellCommandArgs,
-          exitCode,
-          initialLoad,
-          endLoad,
-          OS_JMX.getAvailableProcessors(),
-          stdout.orElse(""),
-          stderr.orElse(""));
-    }
+    boolean hasOutput =
+        (stdout.isPresent() && !stdout.get().isEmpty())
+            || (stderr.isPresent() && !stderr.get().isEmpty());
+    String outputFormat = hasOutput ? "\nstdout:\n%s\nstderr:\n%s\n" : " (no output)%s%s";
+    LOG.debug(
+        "%s: exit code: %d. os load (before, after): (%f, %f). CPU count: %d." + outputFormat,
+        shellCommandArgs,
+        exitCode,
+        initialLoad,
+        endLoad,
+        OS_JMX.getAvailableProcessors(),
+        stdout.orElse(""),
+        stderr.orElse(""));
 
     return StepExecutionResult.of(exitCode, stderr);
   }

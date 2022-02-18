@@ -24,6 +24,7 @@ import com.android.tools.r8.DiagnosticsHandler;
 import com.android.tools.r8.OutputMode;
 import com.facebook.buck.android.toolchain.AndroidPlatformTarget;
 import com.facebook.buck.core.build.execution.context.ExecutionContext;
+import com.facebook.buck.core.util.log.Logger;
 import com.facebook.buck.event.ConsoleEvent;
 import com.facebook.buck.io.filesystem.ProjectFilesystem;
 import com.facebook.buck.shell.ShellStep;
@@ -55,6 +56,8 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 public class DxStep extends ShellStep {
+
+  private static Logger logger = Logger.get(DxStep.class);
 
   /** Options to pass to {@code dx}. */
   public enum Option {
@@ -222,6 +225,7 @@ public class DxStep extends ShellStep {
 
     // TODO: Support D8 for out of process dexing by respecting dexTool here
     String dx = androidPlatformTarget.getDxExecutable().toString();
+    logger.error("the default dx path is " + dx);
 
     if (dexTool.equals(D8)) {
       context.postEvent(
@@ -231,6 +235,7 @@ public class DxStep extends ShellStep {
     if (options.contains(Option.USE_CUSTOM_DX_IF_AVAILABLE)) {
       String customDx = Strings.emptyToNull(System.getProperty("buck.dx"));
       dx = customDx != null ? customDx : dx;
+      logger.error("the option dx path is " + dx);
     }
 
     commandArgs.add(dx);
@@ -303,6 +308,7 @@ public class DxStep extends ShellStep {
   public StepExecutionResult execute(ExecutionContext context)
       throws IOException, InterruptedException {
     if (isRunningInProc()) {
+      logger.error("isRunningInProc ...");
       return StepExecutionResult.of(executeInProcess(context));
     } else {
       return super.execute(context);
