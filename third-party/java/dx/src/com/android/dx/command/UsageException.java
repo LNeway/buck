@@ -22,4 +22,5 @@ package com.android.dx.command;
  */
 public class UsageException extends RuntimeException {
     // This space intentionally left blank.
+
 }

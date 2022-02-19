@@ -52,6 +52,7 @@ import com.android.dx.rop.cst.CstString;
 import com.android.dx.rop.cst.CstType;
 import com.android.dx.rop.type.Prototype;
 
+import com.facebook.buck.core.util.log.Logger;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -1645,6 +1646,7 @@ public class Main {
                     }
                 } else {
                     err.println("unknown option: " + parser.getCurrent());
+                    Logger.get("DxMain").error("unknown option: " + parser.getCurrent());
                     throw new UsageException();
                 }
             }
