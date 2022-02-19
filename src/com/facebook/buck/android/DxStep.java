@@ -208,7 +208,7 @@ public class DxStep extends ShellStep {
     this.filesToDex = ImmutableSet.copyOf(filesToDex);
     this.options = Sets.immutableEnumSet(options);
     this.maxHeapSize = maxHeapSize;
-    this.dexTool = dexTool;
+    this.dexTool = DX;
     this.intermediate = intermediate;
 
     Preconditions.checkArgument(
