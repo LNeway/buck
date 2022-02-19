@@ -247,9 +247,7 @@ public class DxStep extends ShellStep {
     }
 
     commandArgs.add("--dex");
-
-    commandArgs.add("--min-sdk-version=26");
-
+    
     // --statistics flag, if appropriate.
     if (context.getVerbosity().shouldPrintSelectCommandOutput()) {
       commandArgs.add("--statistics");

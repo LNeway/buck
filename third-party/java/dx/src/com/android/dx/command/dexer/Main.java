@@ -1646,7 +1646,6 @@ public class Main {
                     }
                 } else {
                     err.println("unknown option: " + parser.getCurrent());
-                    Logger.get("DxMain").error("unknown option: " + parser.getCurrent());
                     throw new UsageException();
                 }
             }
