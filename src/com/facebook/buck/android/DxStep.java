@@ -208,7 +208,7 @@ public class DxStep extends ShellStep {
     this.filesToDex = ImmutableSet.copyOf(filesToDex);
     this.options = Sets.immutableEnumSet(options);
     this.maxHeapSize = maxHeapSize;
-    this.dexTool = DX;
+    this.dexTool = dexTool;
     this.intermediate = intermediate;
 
     Preconditions.checkArgument(
@@ -370,18 +370,41 @@ public class DxStep extends ShellStep {
         resourcesReferencedInCode = d8Command.getDexItemFactory().computeReferencedResources();
         return 0;
       } catch (CompilationFailedException | IOException e) {
-        context.postEvent(
-            ConsoleEvent.severe(
-                String.join(
-                    System.lineSeparator(),
-                    diagnosticsHandler
-                        .diagnostics
-                        .stream()
-                        .map(Diagnostic::getDiagnosticMessage)
-                        .collect(ImmutableList.toImmutableList()))));
-        e.printStackTrace(context.getStdErr());
-        logger.error(e.getMessage());
-        return 1;
+        ImmutableList<String> argv = getShellCommandInternal(context);
+
+        // The first arguments should be ".../dx --dex" ("...\dx.bat --dex on Windows).  Strip them
+        // off
+        // because we bypass the dispatcher and go straight to the dexer.
+        Preconditions.checkState(
+            argv.get(0).endsWith(File.separator + "dx") || argv.get(0).endsWith("\\dx.bat"));
+        Preconditions.checkState(argv.get(1).equals("--dex"));
+        ImmutableList<String> args = argv.subList(2, argv.size());
+
+        ByteArrayOutputStream stderr = new ByteArrayOutputStream();
+        PrintStream stderrStream = new PrintStream(stderr);
+        try {
+          com.android.dx.command.dexer.DxContext dxContext =
+              new com.android.dx.command.dexer.DxContext(context.getStdOut(), stderrStream);
+          com.android.dx.command.dexer.Main.Arguments arguments =
+              new com.android.dx.command.dexer.Main.Arguments();
+          com.android.dx.command.dexer.Main dexer = new com.android.dx.command.dexer.Main(dxContext);
+          arguments.parseCommandLine(args.toArray(new String[0]), dxContext);
+          int returncode = dexer.run(arguments);
+          logger.error("returncode is " + returncode);
+          String stdErrOutput = stderr.toString();
+          if (!stdErrOutput.isEmpty()) {
+            logger.error("stdErrOutput is " + stdErrOutput);
+            context.postEvent(ConsoleEvent.warning("%s", stdErrOutput));
+          }
+          if (returncode == 0) {
+            resourcesReferencedInCode = dexer.getReferencedResourceNames();
+          }
+          return returncode;
+        } catch (IOException ex) {
+          ex.printStackTrace(context.getStdErr());
+          logger.error("dex exception : " + ex.getMessage());
+          return 1;
+        }
       }
     } else if (DX.equals(dexTool)) {
       ImmutableList<String> argv = getShellCommandInternal(context);
