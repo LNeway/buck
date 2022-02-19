@@ -370,6 +370,7 @@ public class DxStep extends ShellStep {
         resourcesReferencedInCode = d8Command.getDexItemFactory().computeReferencedResources();
         return 0;
       } catch (CompilationFailedException | IOException e) {
+        logger.error("the d8 gets error, try dx...");
         ImmutableList<String> argv = getShellCommandInternal(context);
 
         // The first arguments should be ".../dx --dex" ("...\dx.bat --dex on Windows).  Strip them
