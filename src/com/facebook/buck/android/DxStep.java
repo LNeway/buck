@@ -208,7 +208,7 @@ public class DxStep extends ShellStep {
     this.filesToDex = ImmutableSet.copyOf(filesToDex);
     this.options = Sets.immutableEnumSet(options);
     this.maxHeapSize = maxHeapSize;
-    this.dexTool = DX;
+    this.dexTool = dexTool;
     this.intermediate = intermediate;
 
     Preconditions.checkArgument(
@@ -247,7 +247,8 @@ public class DxStep extends ShellStep {
     }
 
     commandArgs.add("--dex");
-    
+
+
     // --statistics flag, if appropriate.
     if (context.getVerbosity().shouldPrintSelectCommandOutput()) {
       commandArgs.add("--statistics");
