@@ -316,6 +316,7 @@ public class DxStep extends ShellStep {
   }
 
   private int executeInProcess(ExecutionContext context) {
+    logger.debug("the dex tool is " + dexTool);
     if (D8.equals(dexTool)) {
 
       D8DiagnosticsHandler diagnosticsHandler = new D8DiagnosticsHandler();
@@ -356,6 +357,7 @@ public class DxStep extends ShellStep {
           builder.addClasspathFiles(absolutePaths.build());
         }
         D8Command d8Command = builder.build();
+        logger.debug("try to run d8Command" + d8Command.toString());
         com.android.tools.r8.D8.run(d8Command);
 
         if (outputToDex) {
@@ -378,6 +380,7 @@ public class DxStep extends ShellStep {
                         .map(Diagnostic::getDiagnosticMessage)
                         .collect(ImmutableList.toImmutableList()))));
         e.printStackTrace(context.getStdErr());
+        logger.error(e.getMessage());
         return 1;
       }
     } else if (DX.equals(dexTool)) {
