@@ -232,6 +232,8 @@ public class DxStep extends ShellStep {
     }
 
     commandArgs.add(dx);
+    commandArgs.add("--min-api");
+    commandArgs.add("19");
 
     commandArgs.add("--output");
     commandArgs.add(filesystem.resolve(outputDexFile).toString());
