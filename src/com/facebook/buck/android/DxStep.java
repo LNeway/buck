@@ -415,7 +415,7 @@ public class DxStep extends ShellStep {
 
   private boolean isRunningInProc() {
     // D8 runs in process only
-    return options.contains(Option.RUN_IN_PROCESS) || D8.equals(dexTool);
+    return false;
   }
 
   private String writeFileToDexArgsToFile(List<String> items) throws IOException {
