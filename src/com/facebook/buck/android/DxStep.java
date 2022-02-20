@@ -252,11 +252,11 @@ public class DxStep extends ShellStep {
       try {
         inputListFile =
             writeFileToDexArgsToFile(commandArgs.subList(splitPoint, commandArgs.size()));
+        logger.debug(inputListFile);
       } catch (IOException e) {
         throw new RuntimeException("failed to create argument list file", e);
       }
-      builder.add("--input-list");
-      builder.add(inputListFile);
+      builder.addAll(commandArgs);
     } else {
       builder.addAll(commandArgs);
     }
