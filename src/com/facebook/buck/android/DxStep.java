@@ -32,7 +32,6 @@ import com.facebook.buck.step.StepExecutionResult;
 import com.facebook.buck.util.Verbosity;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -269,7 +268,7 @@ public class DxStep extends ShellStep {
   public StepExecutionResult execute(ExecutionContext context)
       throws IOException, InterruptedException {
     if (isRunningInProc()) {
-      logger.error("isRunningInProc ...");
+      logger.error("isRunningInProc ..." + maxHeapSize);
       return StepExecutionResult.of(executeInProcess(context));
     } else {
       return super.execute(context);
