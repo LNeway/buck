@@ -202,7 +202,7 @@ public class AndroidPlatformTargetProducer {
         androidSdkDir.resolve(buildToolsBinDir).resolve("aidl").toAbsolutePath(),
         zipAlignExecutable,
         buildToolsDir
-            .resolve(Platform.detect() == Platform.WINDOWS ? "dx.bat" : "dx")
+            .resolve(Platform.detect() == Platform.WINDOWS ? "dx.bat" : "d8")
             .toAbsolutePath(),
         androidFrameworkIdlFile,
         proguardJar,

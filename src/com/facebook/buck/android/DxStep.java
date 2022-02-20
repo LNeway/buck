@@ -208,7 +208,7 @@ public class DxStep extends ShellStep {
     this.filesToDex = ImmutableSet.copyOf(filesToDex);
     this.options = Sets.immutableEnumSet(options);
     this.maxHeapSize = maxHeapSize;
-    this.dexTool = dexTool;
+    this.dexTool = DX;
     this.intermediate = intermediate;
 
     Preconditions.checkArgument(
@@ -232,45 +232,7 @@ public class DxStep extends ShellStep {
           ConsoleEvent.fine("Using %s instead of D8. D8 can only be used in-process.", dx));
     }
 
-    if (options.contains(Option.USE_CUSTOM_DX_IF_AVAILABLE)) {
-      String customDx = Strings.emptyToNull(System.getProperty("buck.dx"));
-      dx = customDx != null ? customDx : dx;
-      logger.error("the option dx path is " + dx);
-    }
-
     commandArgs.add(dx);
-
-    // Add the Xmx override, but not for in-process dexing, since the dexer won't understand it.
-    // Also, if DX works in-process, it probably wouldn't need an enlarged Xmx.
-    if (maxHeapSize.isPresent() && !options.contains(Option.RUN_IN_PROCESS)) {
-      commandArgs.add(String.format("-JXmx%s", maxHeapSize.get()));
-    }
-
-    commandArgs.add("--dex");
-
-
-    // --statistics flag, if appropriate.
-    if (context.getVerbosity().shouldPrintSelectCommandOutput()) {
-      commandArgs.add("--statistics");
-    }
-
-    if (options.contains(Option.NO_OPTIMIZE)) {
-      commandArgs.add("--no-optimize");
-    }
-
-    if (options.contains(Option.FORCE_JUMBO)) {
-      commandArgs.add("--force-jumbo");
-    }
-
-    // --no-locals flag, if appropriate.
-    if (options.contains(Option.NO_LOCALS)) {
-      commandArgs.add("--no-locals");
-    }
-
-    // verbose flag, if appropriate.
-    if (context.getVerbosity().shouldUseVerbosityFlagIfAvailable()) {
-      commandArgs.add("--verbose");
-    }
 
     commandArgs.add("--output");
     commandArgs.add(filesystem.resolve(outputDexFile).toString());
