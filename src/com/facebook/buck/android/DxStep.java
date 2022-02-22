@@ -207,7 +207,7 @@ public class DxStep extends ShellStep {
     this.filesToDex = ImmutableSet.copyOf(filesToDex);
     this.options = Sets.immutableEnumSet(options);
     this.maxHeapSize = maxHeapSize;
-    this.dexTool = DX;
+    this.dexTool = dexTool;
     this.intermediate = intermediate;
 
     Preconditions.checkArgument(
@@ -234,6 +234,19 @@ public class DxStep extends ShellStep {
     commandArgs.add(dx);
     commandArgs.add("--min-api");
     commandArgs.add("19");
+
+    if (intermediate) {
+      commandArgs.add("--intermediate");
+    }
+
+    if (options.contains(Option.NO_OPTIMIZE)) {
+      commandArgs.add("--debug");
+    } else {
+      commandArgs.add("--release");
+    }
+
+    commandArgs.add("--lib");
+    commandArgs.add(androidPlatformTarget.getAndroidJar().toFile().getAbsolutePath());
 
     commandArgs.add("--output");
     commandArgs.add(filesystem.resolve(outputDexFile).toString());
