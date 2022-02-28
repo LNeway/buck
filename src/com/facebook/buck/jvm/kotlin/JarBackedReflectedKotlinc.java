@@ -178,7 +178,7 @@ public class JarBackedReflectedKotlinc implements Kotlinc {
 
       try (UncloseablePrintStream stdErr = new UncloseablePrintStream(context.getStdErr())) {
 
-        logger.error("class name is " + compilerShim.getClass().getName());
+        logger.error("class name is " + compilerShim.getClass().getName() + "the class loader " + compile.getClass().getClassLoader());
         for (int i = 0; i < args.size(); i++) {
           String arg = args.get(i);
           logger.error("the arg is " + arg);
