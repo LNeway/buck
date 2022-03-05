@@ -211,7 +211,7 @@ public class JarBackedReflectedKotlinc implements Kotlinc {
                       .map(p -> ((PathSourcePath) p).getRelativePath())
                       .map(PATH_TO_URL)
                       .iterator()));
-
+      logger.error("loadCompilerShim the classloader is " + classLoader);
       return classLoader.loadClass(COMPILER_CLASS).newInstance();
     } catch (Exception ex) {
       throw new RuntimeException(ex);
