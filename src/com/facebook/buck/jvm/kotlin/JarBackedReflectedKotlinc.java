@@ -33,6 +33,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
+import com.sun.source.util.Trees;
 import java.io.File;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
@@ -212,6 +213,13 @@ public class JarBackedReflectedKotlinc implements Kotlinc {
                       .map(PATH_TO_URL)
                       .iterator()));
       logger.error("loadCompilerShim the classloader is " + classLoader);
+
+      try {
+        logger.error("loadCompilerShim the tree classloader is " + Trees.class.getClassLoader());
+      } catch (Exception exception) {
+        exception.printStackTrace();
+      }
+
       return classLoader.loadClass(COMPILER_CLASS).newInstance();
     } catch (Exception ex) {
       throw new RuntimeException(ex);
