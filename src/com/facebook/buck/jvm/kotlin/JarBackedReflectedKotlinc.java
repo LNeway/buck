@@ -216,7 +216,7 @@ public class JarBackedReflectedKotlinc implements Kotlinc {
       try {
         logger.error("loadCompilerShim the tree classloader is " + Class.forName("com.sun.source.util.Trees").getClassLoader());
       } catch (Exception exception) {
-        exception.printStackTrace();
+        logger.error("class forName Exception" + exception.getMessage());
       }
 
       return classLoader.loadClass(COMPILER_CLASS).newInstance();
